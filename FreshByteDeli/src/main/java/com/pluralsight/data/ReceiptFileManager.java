@@ -1,4 +1,4 @@
-package com.pluralsight.sandwich;
+package com.pluralsight.data;
 
 public class ReceiptFileManager {
 }

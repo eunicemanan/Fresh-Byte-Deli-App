@@ -1,4 +1,4 @@
 package com.pluralsight.model;
 
-public class Chip {
+public class Sauces {
 }
