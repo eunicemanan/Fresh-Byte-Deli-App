@@ -1,4 +1,4 @@
 package com.pluralsight.model;
 
-public class Sauces {
+public class Sandwich {
 }

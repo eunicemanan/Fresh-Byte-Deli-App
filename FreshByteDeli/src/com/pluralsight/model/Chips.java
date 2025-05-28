@@ -6,13 +6,12 @@ import java.util.Arrays;
 public class Chips extends MenuItem {
 
     // Constants for chip flavors
-    public static final String original = "Original";
-    public static final String saltAndVinegar = "Salt and Vinegar";
-    public static final String bbq = "BBQ";
+    private static final String original = "Original";
+    private static final String saltAndVinegar = "Salt and Vinegar";
+    private static final String bbq = "BBQ";
 
     // List of available flavors, initialized using Arrays.asList
-    private static final ArrayList<String> chipFlavors = new ArrayList<String>(
-            Arrays.asList(original,saltAndVinegar,bbq));
+    private static final ArrayList<String> chipFlavors = new ArrayList<String>(Arrays.asList(original,saltAndVinegar,bbq));
 
     private String chipFlavor;
 
