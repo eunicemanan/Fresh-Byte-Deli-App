@@ -1,7 +1,6 @@
 package com.pluralsight.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class Sandwich extends MenuItem {
@@ -15,11 +14,6 @@ public class Sandwich extends MenuItem {
     private final ArrayList<String> toppings;
     private boolean isToasted;
 
-    private static final ArrayList<String> validMeats = new ArrayList<>(Arrays.asList("Turkey", "Ham", "Roast Beef", "Chicken", "Salami"));
-    private static final ArrayList<String> validCheeses = new ArrayList<>(Arrays.asList("American", "Cheddar", "Swiss", "Provolone"));
-    private static final ArrayList<String> validBreads = new ArrayList<>(Arrays.asList("White", "Wheat", "Rye", "Sourdough"));
-    private static final ArrayList<String> validSauces = new ArrayList<>(Arrays.asList("Mayo", "Mustard", "Ketchup", "Ranch"));
-    private static final ArrayList<String> validToppings = new ArrayList<>(Arrays.asList("Lettuce", "Tomato", "Onions", "Peppers", "Pickles", "Olives"));
 
     private static Scanner input = new Scanner(System.in);
 
@@ -69,21 +63,11 @@ public class Sandwich extends MenuItem {
     }
 
     /**
-     * Validates the sandiwch size.
-     */
-    private static String validateSize(String size) {
-        if (size.equals("4") || size.equals("8") || size.equals("12")) {
-            return size;
-        }
-        throw new IllegalArgumentException("❌ Invalid size: " + size);
-    }
-
-    /**
-     * Prompts and returns a valid sandwich size from user input.
+     * Prompts for and returns a valid sandwich size from user input.
      */
     public static String getValidSandwichSize() {
         while (true) {
-            System.out.print("\n👉 Enter sandwich size in inches (4\", 8\", 12\"): ");
+            System.out.print("\n Enter sandwich size in inches (4\", 8\", 12\"): ");
             String size = input.nextLine().trim();
             if (size.equals("4") || size.equals("8") || size.equals("12")) {
                 return size;
@@ -93,36 +77,38 @@ public class Sandwich extends MenuItem {
     }
 
     /**
-     * Updated toString method that neatly appends all sandwich details.
+     * Updated toString method that displays the sandwich details in a bordered box.
      */
     @Override
     public String toString() {
-        String sauceStr = (sauces.isEmpty()) ? "None" : String.join(", ", sauces);
-        String toppingStr = (toppings.isEmpty()) ? "None" : String.join(", ", toppings);
-        return String.format(
-                "Sandwich: %s\n" +
-                        "Price       : $%.2f\n" +
-                        "Size        : %s inches\n" +
-                        "Meat        : %s\n" +
-                        "Extra Meat  : %s\n" +
-                        "Cheese      : %s\n" +
-                        "Extra Cheese: %s\n" +
-                        "Bread       : %s\n" +
-                        "Sauces      : %s\n" +
-                        "Toppings    : %s\n" +
-                        "Toasted     : %s",
-                getName(),
-                getPrice(),
-                size,
-                meat,
-                extraMeat ? "Yes" : "No",
-                cheese,
-                extraCheese ? "Yes" : "No",
-                bread,
-                sauceStr,
-                toppingStr,
-                isToasted ? "Yes" : "No"
-        );
+
+        String divider = "-----------------------------------------";
+
+        String sauceStr = sauces.isEmpty() ? "None" : String.join(", ", sauces);
+        String toppingStr = toppings.isEmpty() ? "None" : String.join(", ", toppings);
+
+        StringBuilder sb = new StringBuilder();
+
+        // Top divider
+        sb.append(divider).append("\n");
+
+        // Sandwich details
+        sb.append("Sandwich: ").append(getName()).append("\n");
+        sb.append("Price: $").append(String.format("%.2f", getPrice())).append("\n");
+        sb.append("Size: ").append(size).append(" inches").append("\n");
+        sb.append("Meat: ").append(meat).append("\n");
+        sb.append("Extra Meat: ").append(extraMeat ? "Yes" : "No").append("\n");
+        sb.append("Cheese: ").append(cheese).append("\n");
+        sb.append("Extra Cheese: ").append(extraCheese ? "Yes" : "No").append("\n");
+        sb.append("Bread: ").append(bread).append("\n");
+        sb.append("Sauces: ").append(sauceStr).append("\n");
+        sb.append("Toppings: ").append(toppingStr).append("\n");
+        sb.append("Toasted: ").append(isToasted ? "Yes" : "No").append("\n");
+
+        // Bottom divider
+        sb.append(divider).append("\n");
+
+        return sb.toString();
     }
 
 
@@ -130,4 +116,5 @@ public class Sandwich extends MenuItem {
         return price;
     }
 }
+
 

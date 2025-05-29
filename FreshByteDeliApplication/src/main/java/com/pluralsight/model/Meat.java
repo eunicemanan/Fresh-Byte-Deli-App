@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
-/**
- * Represents a meat selection in the sandwich order.
- */
 public class Meat extends MenuItem {
 
     // List of valid meat types
@@ -22,12 +19,6 @@ public class Meat extends MenuItem {
     private final int size;  // Size of the meat portion
     private final int extraMeatCount;  // Number of extra meat servings
 
-    /**
-     * Constructor for Meat.
-     * @param name The meat type.
-     * @param size The sandwich size (4", 8", 12").
-     * @param extraMeatCount The number of extra meat servings.
-     */
     public Meat(String name, int size, int extraMeatCount) {
         super(name, calculatePrice(size, extraMeatCount)); // Fix: Correct price calculation
 
@@ -54,20 +45,12 @@ public class Meat extends MenuItem {
         return basePrice + (extraPrice * extraMeatCount);
     }
 
-    public int getSize() {
-        return size;
-    }
-
-    public int getExtraMeatCount() {
-        return extraMeatCount;
-    }
-
     public static String getMeatTypes(Scanner input) {
         ArrayList<String> validMeats = new ArrayList<>(Arrays.asList("Turkey", "Ham", "Roast Beef", "Chicken", "Salami"));
 
         while (true) {
-            System.out.println("\n🥩 Available Meat Options: " + String.join(", ", validMeats));
-            System.out.print("👉 Enter meat choice: ");
+            System.out.println("\n Available Meat Options: " + String.join(", ", validMeats));
+            System.out.print("  Enter meat choice: ");
             String meatChoice = input.nextLine().trim();
 
             for (String validMeat : validMeats) {
@@ -80,12 +63,6 @@ public class Meat extends MenuItem {
         }
     }
 
-    /**
-     * Prompts the user to decide if they want extra meat.
-     *
-     * @param input A Scanner object to read user input.
-     * @return true if the user wants extra meat; false otherwise.
-     */
     public static boolean getExtraMeat(Scanner input) {
         while (true) {
             System.out.print("\n❓Do you want extra meat? (yes/no): ");
@@ -95,7 +72,7 @@ public class Meat extends MenuItem {
             } else if (response.equalsIgnoreCase("no")) {
                 return false;
             } else {
-                System.out.println("Invalid input. Please enter 'yes' or 'no'.");
+                System.out.println("❌ Invalid input. Please enter 'yes' or 'no'.");
             }
         }
     }

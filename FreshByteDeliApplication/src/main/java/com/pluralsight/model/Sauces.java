@@ -31,11 +31,6 @@ public class Sauces extends MenuItem {
         this.selectedSauce = selectedSauce;
     }
 
-    /**
-     Validates whether a sauce is allowed using equalsIgnoreCase.
-     @param sauce The sauce to check.
-     @return true if valid, false otherwise.*/
-
     private static boolean containsSauce(String sauce) {
         for (String validSauce : sauceFlavors) {
             if (validSauce.equalsIgnoreCase(sauce)) {
@@ -45,26 +40,14 @@ public class Sauces extends MenuItem {
         return false;
     }
 
-    /**
-     * Prints the available sauce options.
-     */
     public static void printAvailableSauces() {
-        System.out.println("Available Sauces: " + String.join(", ", sauceFlavors));
+        System.out.println("\nAvailable Sauces: " + String.join(", ", sauceFlavors));
     }
 
-    /**
-     * Prompts the user to input sauces and returns a validated list of selected sauces.
-     * <p>
-     * This method displays the available sauces, allows the user to enter a comma‐separated list,
-     * validates each input using equalsIgnoreCase against the allowed list, and re-prompts if any sauce is invalid.
-     * </p>
-     *
-     * @param input A Scanner object for user input.
-     * @return An ArrayList<String> of validated sauces.
-     */
     public static ArrayList<String> getSauces(Scanner input) {
         ArrayList<String> selectedSauces = new ArrayList<>();
         while (true) {
+            System.out.println(" ");
             printAvailableSauces();
             System.out.print("Enter sauces separated by commas (or press Enter for none): ");
             String inputSauces = input.nextLine().trim();
@@ -102,10 +85,6 @@ public class Sauces extends MenuItem {
             }
         }
         return selectedSauces;
-    }
-
-    public String getSelectedSauce() {
-        return selectedSauce;
     }
 
     @Override

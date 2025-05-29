@@ -1,50 +1,24 @@
 package com.pluralsight.model;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class Chip {
-    private String type;
-    private final double price;
+    // Removed the 'type' field
+    private final double price; // The only field, and it's final
 
-    public Chip(String type) {
-        this.type = type;
-        this.price = 1.5;
+    // Constructor: Now it only takes the price
+    public Chip(double price) {
+        this.price = price;
     }
 
-    @Override
-    public String toString() {
-        return String.format("Type:\t%s\nPrice:\t$%.2f", type, price);
-    }
-
+    // Getter for the price (still needed as 'price' is private)
     public double getPrice() {
         return price;
     }
 
-    public String getType() {
-        return type;
-    }
+    // No need for getType() anymore
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    /**
-     * Returns the list of available chip flavors.
-     *
-     * @return a list of chip flavors.
-     */
-    public static List<String> getChipFlavors() {
-        return Arrays.asList("Classic", "Barbecue", "Sour Cream & Onion");
-    }
-
-    /**
-     * Displays all available chip flavors.
-     */
-    public static void displayFlavors() {
-        System.out.println("Available Chip Flavors:");
-        for (String flavor : getChipFlavors()) {
-            System.out.println("- " + flavor);
-        }
+    @Override
+    public String toString() {
+        // The toString() method now just prints "Chips" and the price
+        return String.format("Chips ($%.2f)", price);
     }
 }

@@ -29,17 +29,9 @@ public class BreadType {
         }
     }
 
-    /**
-     * Prompts the user to enter a bread type.
-     * Valid inputs are "White", "Wheat", "Rye", "Sourdough", "Multigrain".
-     * This method will repeatedly prompt until the user enters a valid value.
-     *
-     * @param input A Scanner object to read user input.
-     * @return A valid BreadType instance.
-     */
     public static String getBreadType (Scanner input) {
         while (true) {
-            System.out.print("\n👉 Enter bread type (White, Wheat, Rye, Sourdough, Multigrain): ");
+            System.out.print("\n Enter bread type (White, Wheat, Rye, Sourdough, Multigrain): ");
             String breadInput = input.nextLine().trim();
             BreadType breadType = BreadType.fromString(breadInput);
             if (breadType != null) {

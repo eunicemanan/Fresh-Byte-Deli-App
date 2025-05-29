@@ -13,16 +13,13 @@ public class HomeScreen {
     private static final String RESET = "\033[0m";
     private static final String RED = "\033[31m";
     private static final String GREEN = "\033[32m";
-    private static final String YELLOW = "\033[33m";
-    private static final String PURPLE = "\033[35m";
 
     public static void showHomeScreen() {
         while (running) {
-            printCurrentTime(); // ⏰ Show current time before menu
+            printCurrentTime(); //  Show current time before menu
             printHomeMenu();
 
-            String indent = String.format("%7s", "");
-            System.out.print(indent + "      👉 Enter your choice" + GREEN + " [ ENTER 1 OR 2]: " + RESET);
+            System.out.print(" Enter your choice" + GREEN + " [ ENTER 1 OR 2]: " + RESET);
 
             if (input.hasNextInt()) {
                 int choice = input.nextInt();
@@ -30,23 +27,23 @@ public class HomeScreen {
 
                 switch (choice) {
                     case 1:
-                        OrderScreen.startNewOrder(); // place holder
-                        String border = "═".repeat(50);
-                        System.out.println("\n" + indent + "🧾 Starting a new order...");
-                        System.out.println(indent + border);
+                        System.out.println("\n" +  "      🧾  One moment...");
                         try {
                             Thread.sleep(2000); // pauses for 2 seconds
                         } catch (InterruptedException e) {
                             Thread.currentThread().interrupt();
                             System.out.println(RED + "⚠ Sleep interrupted." + RESET);
                         }
+                        OrderScreen.startNewOrder(); // Order screen line 16
+                        String border = "═".repeat(50);
+                        System.out.println(border);
                         // Here you can call your newOrder() method
                         break;
 
                     case 2:
                         try {
                             System.out.println(String.format("\n%6s%s", "", RED + " ⚠  Hold tight! Powering down...⚠" + RESET));
-                            System.out.println("\n" + indent + GREEN + "👋 Fresh Byte Deli signing off... See you soon!" + RESET);
+                            System.out.println("\n" + GREEN + "👋 Fresh Byte Deli signing off... See you soon!" + RESET);
                             Thread.sleep(2000); // pauses for 2 seconds
                         } catch (InterruptedException e) {
                             Thread.currentThread().interrupt();
@@ -61,27 +58,28 @@ public class HomeScreen {
                 }
             } else {
                 String invalidInput = input.nextLine(); // consume the invalid input
-                System.out.println(RED + "\n🚫 '" + invalidInput + "' is NOT a valid option. Please enter a number." + RESET);
+                System.out.println(RED + invalidInput + "' is NOT a valid option. Please enter a number." + RESET);
             }
         }
     }
 
     private static void printHomeMenu() {
-        String indent = String.format("%10s", ""); // 14 spaces
-        String border = "═".repeat(41);
+        String divider = "-----------------------------------------";
 
-        System.out.println(indent + "╔" + border + "╗");
-        System.out.println(indent + "║    🥪  Welcome to Fresh Byte Deli  💻    ");
-        System.out.println(indent + "╠" + border + "╣");
-        System.out.println(indent + "║" + GREEN + "[1]" + RESET + " 🛒 Start New Order");
-        System.out.println(indent + "║" + GREEN + "[2]"  + RESET + " ❌ Exit Application");
-        System.out.println(indent + "╚" + border + "╝");
+        System.out.println(divider);
+        System.out.println("   🥪  Welcome to Fresh Byte Deli  💻");
+        System.out.println(divider);
+        System.out.println(GREEN + "[1]" + RESET + " 🛒 Start New Order");
+        System.out.println(GREEN + "[2]" + RESET + " ❌ Exit Application");
+        System.out.println(divider);
     }
+
 
     private static void printCurrentTime() {
         LocalDateTime now = LocalDateTime.now();
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy | hh:mm a");
         String formattedTime = now.format(formatter);
-        System.out.println("\n(¯`·.¸¸.·´¯) 🕒  Time Now: " + formattedTime + " (¯`·.¸¸.·´¯)");
+        System.out.println( "\n🕒  Time Now: " + formattedTime);
     }
 }

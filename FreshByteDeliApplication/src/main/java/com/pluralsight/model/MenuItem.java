@@ -17,7 +17,4 @@ public class MenuItem {
         return price;
 
     }
-    public String getDetails() {
-        return name + ": $" + price;
-    }
 }

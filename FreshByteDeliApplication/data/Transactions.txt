@@ -1,0 +1,1 @@
+TX_20250529_094455,20250529_094455,"[]","[size	large | flavor	Fruit Punch | price	$3.00]","[Type:	classic | Price:	$1.50]",4.50

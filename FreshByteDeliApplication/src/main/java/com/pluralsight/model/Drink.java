@@ -1,89 +1,48 @@
 package com.pluralsight.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
-public class Drink extends MenuItem {
+public class Drink {
     private final String size;
-    private final String flavor;
+    private final double price; // Changed to final because it's set in the constructor and shouldn't change
 
-    private static final ArrayList<String> drinkFlavors = new ArrayList<>(Arrays.asList("Cola", "Lemonade", "Iced Tea", "Fruit Punch"));
+    public Drink(String size) {
 
-    public Drink(String name, String size, String flavor) {
-        super(name, determinePrice(size)); // Pass correct price to parent class
+        String validatedSize = validateSize(size);  // 1. Validate the incoming 'size' string immediately
 
-        this.size = validateSize(size);
-        this.flavor = validateFlavor(flavor); // Ensure valid flavor
+        this.size = validatedSize;  // 2. Initialize the 'final' size field of THIS Drink object
+
+        this.price = determinePrice(validatedSize); // 3. Determine and initialize the price for this Drink object
     }
 
-    /**
-     * Determines the price based on size.
-     */
+    // --- Helper methods (static, as they don't depend on a specific Drink instance) ---
     private static double determinePrice(String size) {
+        // We've already validated the size in the constructor, so these should be valid.
         if ("small".equalsIgnoreCase(size))
             return 2.00;
         if ("medium".equalsIgnoreCase(size))
             return 2.50;
         if ("large".equalsIgnoreCase(size))
             return 3.00;
-        throw new IllegalArgumentException("❌ Invalid size: " + size);
+        // This line should ideally not be reached if validateSize is called first
+        throw new IllegalArgumentException("❌ Invalid size: " + size + ". This should not happen if validateSize was called.");
     }
 
-    private static String validateFlavor(String flavor) {
-        for (String validFlavor : drinkFlavors) {
-            if (validFlavor.equalsIgnoreCase(flavor.trim())) { // Ensure case is ignored & remove extra spaces
-                return validFlavor; // Return correctly formatted flavor
-            }
-        }
-        throw new IllegalArgumentException("❌ Invalid drink flavor: " + flavor);
-    }
     private static String validateSize(String size) {
-        if (size.equalsIgnoreCase("Small") || size.equalsIgnoreCase("Medium") || size.equalsIgnoreCase("Large")) {
-            return size;
+        if (size == null || (!size.equalsIgnoreCase("Small") && !size.equalsIgnoreCase("Medium") && !size.equalsIgnoreCase("Large"))) {
+            throw new IllegalArgumentException("❌ Invalid size: '" + size + "'. Must be Small, Medium, or Large.");
         }
-        throw new IllegalArgumentException("❌ Invalid size: " + size);
+        return size; // Return the original string (or you could normalize it to "Small", "Medium", "Large")
     }
 
-
-
-
-    public String getSize() {
-        return size;
+    public double getPrice() {
+        return price;
     }
 
-    public String getFlavor() {
-        return flavor;
-    }
-
-    /**
-     * Displays all available drink flavors.
-     */
-    public static void displayFlavors() {
-        System.out.println("\n🔹 Available Drink Flavors:");
-        for (String flavor : drinkFlavors) {
-            System.out.println("👉 " + flavor);
-        }
-
-    }
-
-    /**
-     * Checks if a given flavor is valid.
-     */
-    public static boolean isValidFlavor(String flavor) {
-        for (String validFlavor : drinkFlavors) {
-            if (validFlavor.equalsIgnoreCase(flavor)) {
-                return true; // Match found, return true
-            }
-        }
-        return false; // No match found
+    public static boolean isValidSize(String size) {
+        return size != null && (size.equalsIgnoreCase("Small") || size.equalsIgnoreCase("Medium") || size.equalsIgnoreCase("Large"));
     }
 
     @Override
     public String toString() {
-        return String.format("size\t%s\nflavor\t%s\nprice\t$%.2f", size, flavor, getPrice());
+        return String.format("Size: %s, Price: $%.2f", size, price); // Directly use 'price'
     }
-    public static boolean isValidSize(String size) {
-        return size.equalsIgnoreCase("Small") || size.equalsIgnoreCase("Medium") || size.equalsIgnoreCase("Large");
-    }
-
 }
