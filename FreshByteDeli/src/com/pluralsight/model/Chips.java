@@ -1,42 +1,50 @@
 package com.pluralsight.model;
 
+import com.pluralsight.model.menu.MenuItem;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Chips extends MenuItem {
 
-    // Constants for chip flavors
-    private static final String original = "Original";
-    private static final String saltAndVinegar = "Salt and Vinegar";
-    private static final String bbq = "BBQ";
+    // List of valid chip flavors shared by all Chips instances
+    private static final ArrayList<String> chipFlavors = new ArrayList<>(
+            Arrays.asList("Original","Salt and Vinegar","BBQ"));
 
-    // List of available flavors, initialized using Arrays.asList
-    private static final ArrayList<String> chipFlavors = new ArrayList<String>(Arrays.asList(original,saltAndVinegar,bbq));
-
+    // Instance field to hold the chosen chip flavor for this object
     private String chipFlavor;
 
-    // Constructor
     public Chips(String flavor) {
-        super(flavor, 1.50);
-        this.chipFlavor = flavor;
+        super(flavor, 1.50); // Set inherited name and fixed price of $1.50
+        if (chipFlavors.contains(flavor)) {
+            this.chipFlavor = flavor;
+        } else {
+            // Prevent invalid flavors by throwing an exception
+            throw new IllegalArgumentException("Invalid chip flavor: " + flavor);
+        }
     }
-
-    // Getter and setter
     public String getChipFlavor() {
         return chipFlavor;
+
     }
 
     public void setChipFlavor(String chipFlavor) {
-        this.chipFlavor = chipFlavor;
-        setName(chipFlavor); // update name in MenuItem
+        if (chipFlavors.contains(chipFlavor)) {
+            this.chipFlavor = chipFlavor;
+            name(chipFlavor); // Keep MenuItem.name in sync
+        } else {
+            throw new IllegalArgumentException("Invalid chip flavor: " + chipFlavor);
+        }
     }
 
-    // Method to access the available chip flavors
     public static ArrayList<String> getAvailableFlavors() {
         return chipFlavors;
     }
 
-    // toString method
+     /*Returns a readable description of this chip order,
+     including flavor and price.
+     @return formatted string with flavor and price*/
+
     @Override
     public String toString() {
         return chipFlavor + " Chips - $" + String.format("%.2f", getPrice());

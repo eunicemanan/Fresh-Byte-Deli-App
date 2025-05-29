@@ -2,13 +2,14 @@ package com.pluralsight.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
 
 /**
  * Represents a sauce selection in the menu.
  */
 public class Sauces extends MenuItem {
 
-    // Static list of available sauce flavors
+    // Static list of allowed sauce flavors with proper capitalization
     private static final ArrayList<String> sauceFlavors = new ArrayList<>(
             Arrays.asList("Mayo", "Mustard", "Ketchup", "Ranch", "Thousand Island", "Vinaigrette")
     );
@@ -17,27 +18,94 @@ public class Sauces extends MenuItem {
 
     /**
      * Constructor for Sauces.
+     *
      * @param selectedSauce The user's chosen sauce.
      */
     public Sauces(String selectedSauce) {
         super(selectedSauce + " Sauce", 0.50);
 
-        if (!sauceFlavors.contains(selectedSauce)) {
+        if (!containsSauce(selectedSauce)) {
             throw new IllegalArgumentException("Invalid sauce selection: " + selectedSauce);
         }
 
         this.selectedSauce = selectedSauce;
     }
 
-    public String getSelectedSauce() {
-        return selectedSauce;
+    /**
+     Validates whether a sauce is allowed using equalsIgnoreCase.
+     @param sauce The sauce to check.
+     @return true if valid, false otherwise.*/
+
+    private static boolean containsSauce(String sauce) {
+        for (String validSauce : sauceFlavors) {
+            if (validSauce.equalsIgnoreCase(sauce)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
-     * Prints available sauces.
+     * Prints the available sauce options.
      */
     public static void printAvailableSauces() {
-        System.out.println("Available Sauces: " + sauceFlavors);
+        System.out.println("Available Sauces: " + String.join(", ", sauceFlavors));
+    }
+
+    /**
+     * Prompts the user to input sauces and returns a validated list of selected sauces.
+     * <p>
+     * This method displays the available sauces, allows the user to enter a comma‐separated list,
+     * validates each input using equalsIgnoreCase against the allowed list, and re-prompts if any sauce is invalid.
+     * </p>
+     *
+     * @param input A Scanner object for user input.
+     * @return An ArrayList<String> of validated sauces.
+     */
+    public static ArrayList<String> getSauces(Scanner input) {
+        ArrayList<String> selectedSauces = new ArrayList<>();
+        while (true) {
+            printAvailableSauces();
+            System.out.print("Enter sauces separated by commas (or press Enter for none): ");
+            String inputSauces = input.nextLine().trim();
+
+            // If no sauces entered, return an empty list.
+            if (inputSauces.isEmpty()) {
+                break;
+            }
+
+            String[] sauceArray = inputSauces.split(",");
+            selectedSauces.clear(); // Clear previous entries for a fresh attempt.
+            boolean allValid = true;
+
+            for (String sauce : sauceArray) {
+                String trimmedSauce = sauce.trim();
+                boolean matchFound = false;
+                for (String validSauce : sauceFlavors) {
+                    if (validSauce.equalsIgnoreCase(trimmedSauce)) {
+                        selectedSauces.add(validSauce);  // Use the properly formatted sauce.
+                        matchFound = true;
+                        break;
+                    }
+                }
+                if (!matchFound) {
+                    System.out.println("❌ Invalid sauce: \"" + trimmedSauce + "\". Please choose only from the available options.");
+                    allValid = false;
+                    break; // Stop checking further; re-prompt the user.
+                }
+            }
+
+            if (allValid) {
+                break;
+            } else {
+                System.out.println("Redirecting to sauce options...\n");
+            }
+        }
+        return selectedSauces;
+    }
+
+    public String getSelectedSauce() {
+        return selectedSauce;
     }
 
     @Override

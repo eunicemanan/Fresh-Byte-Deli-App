@@ -88,7 +88,7 @@ public class Meat extends MenuItem {
      */
     public static boolean getExtraMeat(Scanner input) {
         while (true) {
-            System.out.print("Do you want extra meat? (yes/no): ");
+            System.out.print("\n❓Do you want extra meat? (yes/no): ");
             String response = input.nextLine().trim();
             if (response.equalsIgnoreCase("yes")) {
                 return true;

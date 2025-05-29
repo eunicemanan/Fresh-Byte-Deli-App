@@ -30,6 +30,7 @@ public class HomeScreen {
 
                 switch (choice) {
                     case 1:
+                        /*startNewOrder;*/ // place holder
                         String border = "═".repeat(50);
                         System.out.println("\n" + indent + "🧾 Starting a new order...");
                         System.out.println(indent + border);
@@ -63,7 +64,6 @@ public class HomeScreen {
                 System.out.println(RED + "\n🚫 '" + invalidInput + "' is NOT a valid option. Please enter a number." + RESET);
             }
         }
-        // Do NOT call System.exit(0) here; just let the program exit naturally
     }
 
     private static void printHomeMenu() {

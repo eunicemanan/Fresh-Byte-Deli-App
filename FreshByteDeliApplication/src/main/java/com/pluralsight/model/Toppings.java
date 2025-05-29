@@ -11,53 +11,126 @@ public class Toppings {
 
     // Lists of different topping categories
     private static final ArrayList<String> cheeses = new ArrayList<>(Arrays.asList("American", "Provolone", "Cheddar", "Swiss"));
-    private static final ArrayList<String> freeToppings = new ArrayList<>(Arrays.asList("Lettuce", "Peppers", "Onions", "Tomatoes", "Jalapeños", "Cucumbers", "Pickles", "Guacamole", "Mushrooms"));
+    private static final ArrayList<String> freeToppings = new ArrayList<>(Arrays.asList(
+            "Lettuce", "Tomato", "Onions", "Peppers", "Pickles", "Olives"));
 
     private final ArrayList<String> selectedToppings;
     private final int sandwichSize; // Size in inches (4, 8, 12)
 
     /**
-     * Constructor initializes toppings list.
-     * @param sandwichSize The size of the sandwich (4, 8, 12).
+     * Constructor initializes the toppings list.
+     *
+     * @param sandwichSize The size of the sandwich (4, 8, or 12 inches).
      */
     public Toppings(int sandwichSize) {
         if (sandwichSize != 4 && sandwichSize != 8 && sandwichSize != 12) {
             throw new IllegalArgumentException("Invalid sandwich size: " + sandwichSize);
         }
-
         this.sandwichSize = sandwichSize;
         this.selectedToppings = new ArrayList<>();
     }
 
     /**
-     * Adds a topping if it's valid.
-     * @param topping The topping to add.
+     * Displays all available free toppings.
      */
-    public void addTopping(String topping) {
-        if (isValidTopping(topping)) {
-            selectedToppings.add(topping);
-        } else {
-            throw new IllegalArgumentException("Invalid topping: " + topping);
-        }
+    public static void displayValidToppings() {
+        System.out.println("Available Toppings: " + String.join(", ", freeToppings));
     }
 
     /**
-     * Determines if a topping is valid.
+     * Prompts the user for toppings input and returns a validated list of toppings.
+     * <p>
+     * This method displays the available free toppings, allows the user to enter
+     * a comma‐separated list, validates each topping using equalsIgnoreCase against
+     * the allowed list, and if any topping is invalid, it shows an error message and
+     * re-prompts the user.
+     * </p>
+     *
+     * @param input A Scanner object for user input.
+     * @return An ArrayList of validated toppings.
+     */
+    public static ArrayList<String> getToppings(Scanner input) {
+        ArrayList<String> selectedToppings = new ArrayList<>();
+        while (true) {
+            displayValidToppings();
+            System.out.print("Enter toppings separated by commas (or press Enter for none): ");
+            String inputToppings = input.nextLine().trim();
+
+            // If the user doesn't enter any toppings, return an empty list.
+            if (inputToppings.isEmpty()) {
+                break;
+            }
+
+            String[] toppingArray = inputToppings.split(",");
+            selectedToppings.clear(); // Start fresh for each iteration
+            boolean allValid = true;
+
+            for (String topping : toppingArray) {
+                String trimmedTopping = topping.trim();
+                boolean matchFound = false;
+                // Validate using equalsIgnoreCase against the free toppings list.
+                for (String valid : freeToppings) {
+                    if (valid.equalsIgnoreCase(trimmedTopping)) {
+                        selectedToppings.add(valid);
+                        matchFound = true;
+                        break;
+                    }
+                }
+                if (!matchFound) {
+                    System.out.println("❌ Invalid topping: \"" + trimmedTopping + "\". Please choose only from the available options.");
+                    allValid = false;
+                    break; // Stop checking further; re-prompt the user.
+                }
+            }
+            if (allValid) {
+                break; // All entered toppings are valid.
+            } else {
+                System.out.println("Redirecting to topping options...\n");
+            }
+        }
+        return selectedToppings;
+    }
+    /**
+     * Determines if a topping is valid by checking if it's in the cheeses list or free toppings list.
+     *
+     * @param topping The topping to validate.
+     * @return true if the topping is valid (ignoring case), false otherwise.
      */
     private static boolean isValidTopping(String topping) {
-        return cheeses.contains(topping) || freeToppings.contains(topping);
+        for (String cheese : cheeses) {
+            if (cheese.equalsIgnoreCase(topping)) {
+                return true;
+            }
+        }
+        for (String free : freeToppings) {
+            if (free.equalsIgnoreCase(topping)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    /**
-     * Calculates total price for cheese toppings (free toppings have no cost).
-     */
     public double getCheesePrice() {
         double basePrice = (sandwichSize == 4) ? 0.75 : (sandwichSize == 8) ? 1.50 : 2.25;
         double extraCheesePrice = (sandwichSize == 4) ? 0.30 : (sandwichSize == 8) ? 0.60 : 0.90;
 
-        long cheeseCount = selectedToppings.stream().filter(cheeses::contains).count();
-        return (cheeseCount > 1) ? (basePrice + ((cheeseCount - 1) * extraCheesePrice)) : (cheeseCount > 0 ? basePrice : 0.00);
+        long cheeseCount = selectedToppings.stream().filter(topping -> {
+            for (String cheese : cheeses) {
+                if (cheese.equalsIgnoreCase(topping)) {
+                    return true;
+                }
+            }
+            return false;
+        }).count();
+
+        return (cheeseCount > 1) ? (basePrice + ((cheeseCount - 1) * extraCheesePrice))
+                : (cheeseCount > 0 ? basePrice : 0.00);
     }
+
+    /**Prompts the user to select a cheese type from valid options.
+     @param input A Scanner object for user input.
+     @return The selected cheese type (properly formatted).
+     */
     public static String getCheeseTypes(Scanner input) {
         ArrayList<String> validCheeses = new ArrayList<>(Arrays.asList("American", "Provolone", "Cheddar", "Swiss"));
 
@@ -68,29 +141,44 @@ public class Toppings {
 
             for (String validCheese : validCheeses) {
                 if (validCheese.equalsIgnoreCase(cheeseChoice)) {
-                    return validCheese; // ✅ Ensures correct formatting, regardless of input case
+                    return validCheese; // Ensures correct formatting
                 }
             }
-
             System.out.println("❌ Invalid cheese choice. Please try again.");
         }
     }
 
+    /** Asks the user if they want extra cheese.
+     @param input A Scanner object for user input.
+      @return true if extra cheese is desired, false otherwise.
+     */
+    public static boolean getExtraCheese(Scanner input) {
+        while (true) {
+            System.out.println("\n❓ Do you want extra cheese? (yes/no): ");
+            String response = input.nextLine().trim();
+            if (response.equalsIgnoreCase("yes")) {
+                return true;
+            } else if (response.equalsIgnoreCase("no")) {
+                return false;
+            } else {
+                System.out.println("❌ Invalid input. Please enter 'yes' or 'no'.");
+            }
+        }
+    }
 
     /**
-     * Returns a list of selected toppings.
-     */
+     * Returns the list of selected toppings. @return An ArrayList of selected toppings.*/
+
     public ArrayList<String> getSelectedToppings() {
         return selectedToppings;
     }
 
-
-
     /**
-     * Returns a formatted string representation of the toppings.
-     */
+     Returns a formatted string representation of the toppings and cheese cost.
+     @return A string representing the selected toppings and the cheese cost.**/
     @Override
     public String toString() {
         return String.format("Toppings: %s | Cheese Cost: $%.2f", selectedToppings, getCheesePrice());
     }
 }
+

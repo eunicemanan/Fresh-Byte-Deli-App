@@ -1,10 +1,9 @@
-package com.pluralsight.model;
+package com.pluralsight.model.menu;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Cheese extends MenuItem {
-
     // List of valid cheese types
     private static final ArrayList<String> cheeseTypes = new ArrayList<>(
             Arrays.asList("American", "Provolone", "Cheddar", "Swiss"));
@@ -13,12 +12,13 @@ public class Cheese extends MenuItem {
     private static final ArrayList<Integer> sizes = new ArrayList<>(Arrays.asList(4, 8, 12));
     private static final ArrayList<Double> prices = new ArrayList<>(Arrays.asList(0.75, 1.50, 2.25));
 
-    private int size;
-    private String cheeseType;
+    private final int size;
+    private final String cheeseType;
 
     // Constructor
     public Cheese(String cheeseType, int size) {
-        super(cheeseType, 0); // price calculated below
+        super(cheeseType + " Cheese", 0); // Corrected super constructor
+
         if (!cheeseTypes.contains(cheeseType)) {
             throw new IllegalArgumentException("Invalid cheese type: " + cheeseType);
         }
@@ -28,11 +28,11 @@ public class Cheese extends MenuItem {
             throw new IllegalArgumentException("Invalid size: " + size);
         }
         this.size = size;
-        this.price = calculatePrice(size);
+        this.price = calculatePrice(); // Corrected price assignment
     }
 
-    // Price calculation based on size
-    private double calculatePrice(int size) {
+    // Calculate price based on size
+    private double calculatePrice() {
         int index = sizes.indexOf(size);
         return prices.get(index);
     }
@@ -51,6 +51,6 @@ public class Cheese extends MenuItem {
 
     @Override
     public String toString() {
-        return cheeseType + " Cheese (" + size + "\") - $" + String.format("%.2f", getPrice());
+        return cheeseType + " Cheese (" + size + "\") - $" + String.format("%.2f", price);
     }
 }

@@ -1,6 +1,4 @@
-package com.pluralsight.model;
-
-import com.pluralsight.model.menu.MenuItem;
+package com.pluralsight.model.menu;
 
 public class Drinks extends MenuItem {
 
@@ -19,31 +17,34 @@ public class Drinks extends MenuItem {
             return price;
         }
 
-        // Optional: parse string to enum (case-insensitive)
+        // Efficiently parse string input to enum using Stream
         public static Size fromString(String size) {
             if (size == null) return null;
-            switch(size.toLowerCase()) {
-                case "small":
-                    return SMALL;
-                case "medium":
-                    return MEDIUM;
-                case "large":
-                    return LARGE;
-                default:
-                    return null;
-            }
+            return switch (size.toLowerCase()) {
+                case "small" -> SMALL;
+                case "medium" -> MEDIUM;
+                case "large" -> LARGE;
+                default -> null;
+            };
         }
     }
 
-    // Instance fields
-    private Size size;
-    private String flavor;
+    private final Size size;
+    private final String flavor;
 
-    public Drinks(String name, String sizeStr, String flavor) {
-        super(name, 0); // price will be calculated
+    public Drinks(String flavor, String sizeStr) {
+        super(flavor + " Drink", getValidatedPrice(sizeStr)); // Pass correct price to superclass
+
         this.size = Size.fromString(sizeStr);
+        if (this.size == null) throw new IllegalArgumentException("Invalid drink size: " + sizeStr);
+
         this.flavor = flavor;
-        this.price = (this.size != null) ? this.size.getPrice() : 0;
+    }
+
+    private static double getValidatedPrice(String sizeStr) {
+        Size size = Size.fromString(sizeStr);
+        if (size == null) throw new IllegalArgumentException("Invalid size: " + sizeStr);
+        return size.getPrice();
     }
 
     public Size getSize() {
@@ -56,8 +57,9 @@ public class Drinks extends MenuItem {
 
     @Override
     public String toString() {
-        return getName() + " (" + (size != null ? size.name().charAt(0) + size.name().substring(1).toLowerCase() : "Unknown") +
-                ", " + flavor + ") - $" + String.format("%.2f", getPrice());
+        return size.name().charAt(0) + size.name().substring(1).toLowerCase() +
+                " " + flavor + " Drink - $" + String.format("%.2f", getPrice());
     }
 }
+
 

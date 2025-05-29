@@ -1,16 +1,12 @@
 package com.pluralsight.model;
 
-/**
- * Represents a chip selection in the menu.
- */
+import java.util.Arrays;
+import java.util.List;
+
 public class Chip {
     private String type;
     private final double price;
 
-    /**
-     * Constructor for Chip.
-     * @param type The chip flavor.
-     */
     public Chip(String type) {
         this.type = type;
         this.price = 1.5;
@@ -18,7 +14,7 @@ public class Chip {
 
     @Override
     public String toString() {
-        return String.format("type\t%s\nprice\t$%.2f", type, price);
+        return String.format("Type:\t%s\nPrice:\t$%.2f", type, price);
     }
 
     public double getPrice() {
@@ -32,5 +28,23 @@ public class Chip {
     public void setType(String type) {
         this.type = type;
     }
-}
 
+    /**
+     * Returns the list of available chip flavors.
+     *
+     * @return a list of chip flavors.
+     */
+    public static List<String> getChipFlavors() {
+        return Arrays.asList("Classic", "Barbecue", "Sour Cream & Onion");
+    }
+
+    /**
+     * Displays all available chip flavors.
+     */
+    public static void displayFlavors() {
+        System.out.println("Available Chip Flavors:");
+        for (String flavor : getChipFlavors()) {
+            System.out.println("- " + flavor);
+        }
+    }
+}

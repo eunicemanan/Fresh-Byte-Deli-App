@@ -23,7 +23,9 @@ public class Sandwich extends MenuItem {
 
     private static Scanner input = new Scanner(System.in);
 
-    public Sandwich(String name, double price, String size, String meat, String cheese, boolean extraMeat, boolean extraCheese, String bread, ArrayList<String> sauces, ArrayList<String> toppings, boolean isToasted) {
+    public Sandwich(String name, double price, String size, String meat, String cheese,
+                    boolean extraMeat, boolean extraCheese, String bread,
+                    ArrayList<String> sauces, ArrayList<String> toppings, boolean isToasted) {
         super(name, price);
         this.size = size;
         this.meat = meat;
@@ -36,12 +38,14 @@ public class Sandwich extends MenuItem {
         this.isToasted = isToasted;
     }
 
-
+    /**
+     * Calculates the price based on sandwich size and extras.
+     */
     private static double calculatePrice(String size, boolean extraMeat, boolean extraCheese) {
         double basePrice = switch (size) {
-            case "4\"" -> 5.5;
-            case "8\"" -> 7.0;
-            case "12\"" -> 8.5;
+            case "4" -> 5.5;
+            case "8" -> 7.0;
+            case "12" -> 8.5;
             default -> throw new IllegalArgumentException("❌ Invalid size: " + size);
         };
 
@@ -50,28 +54,37 @@ public class Sandwich extends MenuItem {
         return basePrice;
     }
 
-    public Sandwich(String size, String meat, String cheese, boolean extraMeat, boolean extraCheese, String bread, boolean isToasted) {
+    /**
+     * Constructor for a custom sandwich using the calculated price.
+     */
+    public Sandwich(String size, String meat, String cheese, boolean extraMeat, boolean extraCheese,
+                    String bread, boolean isToasted, ArrayList<String> sauces, ArrayList<String> toppings) {
         this("Custom Sandwich", calculatePrice(size, extraMeat, extraCheese), size,
                 meat.isEmpty() ? "None" : meat,
                 cheese.isEmpty() ? "None" : cheese,
                 extraMeat, extraCheese,
                 bread.isEmpty() ? "None" : bread,
-                new ArrayList<>(), new ArrayList<>(),
+                sauces, toppings,
                 isToasted);
     }
 
-
+    /**
+     * Validates the sandiwch size.
+     */
     private static String validateSize(String size) {
-        if (size.equals("4\"") || size.equals("8\"") || size.equals("12\"")) {
+        if (size.equals("4") || size.equals("8") || size.equals("12")) {
             return size;
         }
         throw new IllegalArgumentException("❌ Invalid size: " + size);
     }
 
+    /**
+     * Prompts and returns a valid sandwich size from user input.
+     */
     public static String getValidSandwichSize() {
         while (true) {
-            System.out.print("\n👉 Enter sandwich size in inches (4, 8, 12): ");
-           String size = input.nextLine().trim();
+            System.out.print("\n👉 Enter sandwich size in inches (4\", 8\", 12\"): ");
+            String size = input.nextLine().trim();
             if (size.equals("4") || size.equals("8") || size.equals("12")) {
                 return size;
             }
@@ -79,17 +92,42 @@ public class Sandwich extends MenuItem {
         }
     }
 
-
+    /**
+     * Updated toString method that neatly appends all sandwich details.
+     */
     @Override
     public String toString() {
+        String sauceStr = (sauces.isEmpty()) ? "None" : String.join(", ", sauces);
+        String toppingStr = (toppings.isEmpty()) ? "None" : String.join(", ", toppings);
         return String.format(
-                "size          %s\nmeat          %s\nextraMeat     %s\ncheese        %s\nextraCheese   %s\nbread         %s\nsauces        %s\ntoppings      %s\ntoasted       %s",
-                size, meat, extraMeat, cheese, extraCheese, bread, sauces, toppings, isToasted
+                "Sandwich: %s\n" +
+                        "Price       : $%.2f\n" +
+                        "Size        : %s inches\n" +
+                        "Meat        : %s\n" +
+                        "Extra Meat  : %s\n" +
+                        "Cheese      : %s\n" +
+                        "Extra Cheese: %s\n" +
+                        "Bread       : %s\n" +
+                        "Sauces      : %s\n" +
+                        "Toppings    : %s\n" +
+                        "Toasted     : %s",
+                getName(),
+                getPrice(),
+                size,
+                meat,
+                extraMeat ? "Yes" : "No",
+                cheese,
+                extraCheese ? "Yes" : "No",
+                bread,
+                sauceStr,
+                toppingStr,
+                isToasted ? "Yes" : "No"
         );
     }
 
-    public double getPrice(){
-        return price;
 
+    public double getPrice() {
+        return price;
     }
 }
+
