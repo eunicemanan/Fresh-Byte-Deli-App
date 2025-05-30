@@ -15,14 +15,12 @@ public class Drink {
 
     // --- Helper methods (static, as they don't depend on a specific Drink instance) ---
     private static double determinePrice(String size) {
-        // We've already validated the size in the constructor, so these should be valid.
         if ("small".equalsIgnoreCase(size))
             return 2.00;
         if ("medium".equalsIgnoreCase(size))
             return 2.50;
         if ("large".equalsIgnoreCase(size))
             return 3.00;
-        // This line should ideally not be reached if validateSize is called first
         throw new IllegalArgumentException("❌ Invalid size: " + size + ". This should not happen if validateSize was called.");
     }
 
@@ -30,7 +28,7 @@ public class Drink {
         if (size == null || (!size.equalsIgnoreCase("Small") && !size.equalsIgnoreCase("Medium") && !size.equalsIgnoreCase("Large"))) {
             throw new IllegalArgumentException("❌ Invalid size: '" + size + "'. Must be Small, Medium, or Large.");
         }
-        return size; // Return the original string (or you could normalize it to "Small", "Medium", "Large")
+        return size; // Return the original string
     }
 
     public double getPrice() {
@@ -40,9 +38,11 @@ public class Drink {
     public static boolean isValidSize(String size) {
         return size != null && (size.equalsIgnoreCase("Small") || size.equalsIgnoreCase("Medium") || size.equalsIgnoreCase("Large"));
     }
-
     @Override
     public String toString() {
-        return String.format("Size: %s, Price: $%.2f", size, price); // Directly use 'price'
+        return "Size: " + size + "\n" +
+                "Price: $" + String.format("%.2f", getPrice());
     }
+
+
 }

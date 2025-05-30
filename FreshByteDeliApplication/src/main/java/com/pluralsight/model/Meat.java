@@ -49,8 +49,8 @@ public class Meat extends MenuItem {
         ArrayList<String> validMeats = new ArrayList<>(Arrays.asList("Turkey", "Ham", "Roast Beef", "Chicken", "Salami"));
 
         while (true) {
-            System.out.println("\n Available Meat Options: " + String.join(", ", validMeats));
-            System.out.print("  Enter meat choice: ");
+            System.out.println("\nAvailable Meat Options: " + String.join(", ", validMeats));
+            System.out.print("Enter meat choice: ");
             String meatChoice = input.nextLine().trim();
 
             for (String validMeat : validMeats) {
@@ -65,7 +65,7 @@ public class Meat extends MenuItem {
 
     public static boolean getExtraMeat(Scanner input) {
         while (true) {
-            System.out.print("\n❓Do you want extra meat? (yes/no): ");
+            System.out.print("\nDo you want extra meat? (yes/no): ");
             String response = input.nextLine().trim();
             if (response.equalsIgnoreCase("yes")) {
                 return true;

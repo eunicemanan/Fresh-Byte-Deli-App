@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
-/* Represents available toppings for a sandwich, including cheese. */
 public class Toppings {
+
+    private static final String RESET = "\033[0m";
+    private static final String GREEN = "\033[32m";
 
     // Lists of different topping categories
     private static final ArrayList<String> cheeses = new ArrayList<>(Arrays.asList("American", "Provolone", "Cheddar", "Swiss"));
@@ -23,14 +25,15 @@ public class Toppings {
         this.selectedToppings = new ArrayList<>();
     }
 
-    /* Displays all available free toppings. */
+
     public static void displayValidToppings() {
-        System.out.println("Available Toppings: " + String.join(", ", freeToppings));
+        System.out.println("Available Toppings: " + GREEN + String.join(", ", freeToppings)+ RESET);
     }
 
     public static ArrayList<String> getToppings(Scanner input) {
         ArrayList<String> selectedToppings = new ArrayList<>();
         while (true) {
+            System.out.println("");
             displayValidToppings();
             System.out.print("Enter toppings separated by comma,  (or press Enter for none): ");
             String inputToppings = input.nextLine().trim();
@@ -69,6 +72,31 @@ public class Toppings {
         }
         return selectedToppings;
     }
+    public static boolean getExtraVegetables(Scanner input) {
+        while (true) {
+            System.out.println("");
+            displayValidToppings();
+
+            System.out.print("Do you want extra veg? (yes/no): ");
+            String response = input.nextLine().trim();
+
+            // If the user provides no input, we'll assume no extra veg.
+            if (response.isEmpty()) {
+                return false;
+            }
+
+            if (response.equalsIgnoreCase("yes")) {
+                return true;
+            } else if (response.equalsIgnoreCase("no")) {
+                return false;
+            } else {
+                System.out.println("❌ Invalid input: \"" + response + "\". Please enter 'yes' or 'no'.");
+                System.out.println("Redirecting to extra veg options...\n");
+            }
+        }
+    }
+
+
 
     public double getCheesePrice() {
         double basePrice = (sandwichSize == 4) ? 0.75 : (sandwichSize == 8) ? 1.50 : 2.25;
@@ -109,7 +137,7 @@ public class Toppings {
 
     public static boolean getExtraCheese(Scanner input) {
         while (true) {
-            System.out.println("\n❓ Do you want extra cheese? (yes/no): ");
+            System.out.println("\nDo you want extra cheese? (yes/no): ");
             String response = input.nextLine().trim();
             if (response.equalsIgnoreCase("yes")) {
                 return true;

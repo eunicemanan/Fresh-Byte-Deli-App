@@ -3,123 +3,174 @@ package com.pluralsight.ui;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
+
 import com.pluralsight.model.*;
 import com.pluralsight.data.ReceiptFileManager;
 
-public class OrderScreen extends HomeScreen {
-    private static Scanner input = new Scanner(System.in);
+public class OrderScreen {
+
+    private final Scanner scanner;
+    private Order currentOrder;
+
     private static final String RESET = "\033[0m";
     private static final String RED = "\033[31m";
     private static final String GREEN = "\033[32m";
+    private static final String divider = "-----------------------------------------";
 
-    public static void startNewOrder() {
-        Order order = new Order();
-        boolean editingOrder = true;
+    public OrderScreen(Scanner scanner) {
+        this.scanner = scanner;
+        this.currentOrder = new Order();
+    }
 
-        String divider = "-----------------------------------------";
+    public int displayOrderMenu() {
+        boolean continueOrdering = true;
+        int actionChosen = -1;
 
-        while (editingOrder) {
-            System.out.println("\n\n\n" + "🥪 Welcome to the Order Screen!\n");
+        System.out.println("\n\n\n" + "🥪 Welcome to the Order Screen!\n");
 
-            boolean addingItems = true;
-            // Order item selection loop.
-            while (addingItems) {
-                printCurrentTime(); // ⏰ Show current time
+        while (continueOrdering) {
+            printCurrentTime();
 
-                // Simple menu display with a divider.
-                System.out.println(divider);
-                System.out.println("       Order at Fresh Byte Deli        ");
-                System.out.println(divider);
-                System.out.println(GREEN + "[1]" + RESET + " Add Sandwich");
-                System.out.println(GREEN + "[2]" + RESET + " Add Drink");
-                System.out.println(GREEN + "[3]" + RESET + " Add Chips");
-                System.out.println(GREEN + "[4]" + RESET + " Finish Order & Checkout");
-                System.out.println(divider);
-                System.out.print(" Enter your choice [1-4]: ");
+            // Updated printed menu to match our switch-case (six options)
+            System.out.println(divider);
+            System.out.println("       Order at Fresh Byte Deli        ");
+            System.out.println(divider);
+            System.out.println(GREEN + "[1]" + RESET + " Add Custom Sandwich");
+            System.out.println(GREEN + "[2]" + RESET + " Add Signature Sandwich");
+            System.out.println(GREEN + "[3]" + RESET + " Add Drink");
+            System.out.println(GREEN + "[4]" + RESET + " Add Chips");
+            System.out.println(GREEN + "[5]" + RESET + " Finish Order & Checkout");
+            System.out.println(RED + "[6]" + RESET + " Go Back To Main Menu");
+            System.out.println(divider);
+            System.out.print(" Enter your choice [1-6]: ");
 
-                if (input.hasNextInt()) {
-                    int choice = input.nextInt();
-                    input.nextLine(); // Consume newline
+            try {
+                int choice = scanner.nextInt();
+                scanner.nextLine(); // consume newline
 
-                    switch (choice) {
-                        case 1:
-                            // Create and add a sandwich.
-                            Sandwich sandwich = createSandwich();
-                            order.getSandwiches().add(sandwich);
-                            System.out.println(GREEN + "\n+ $" + String.format("%.2f", sandwich.getPrice())
-                                    + " added for Sandwich." + RESET);
-                            break;
-                        case 2:
-                            // Create and add a drink.
-                            Drink drink = createDrink();
-                            order.getDrinks().add(drink);
-                            System.out.println(GREEN + "\n+ $" + String.format("%.2f", drink.getPrice())
-                                    + " added for Drink." + RESET);
-                            break;
-                        case 3:
-                            // Create and add chips using the static helper that validates input.
-                            Chip chip = new Chip(1.50);
-                            order.getChips().add(chip);
-                            System.out.println(GREEN + "\n+ $" + String.format("%.2f", chip.getPrice())
-                                    + " added for Chips." + RESET);
-                            break;
-                        case 4:
-                            addingItems = false;
-                            break;
-                        default:
-                            System.out.println(RED + "❌ Invalid option. Try again." + RESET);
-                            break;
-                    }
-                } else {
-                    input.nextLine(); // Consume invalid input
-                    System.out.println(RED + "🚫 Invalid entry! Please enter a number." + RESET);
+                switch (choice) {
+                    case 1: // Add Custom Sandwich
+                        Sandwich customSandwich = createSandwich();
+                        currentOrder.getSandwiches().add(customSandwich);
+                        System.out.println(GREEN + "\n+ $" + String.format("%.2f", customSandwich.getPrice())
+                                + " added for Sandwich." + RESET);
+                        break;
+                    case 2: // Add Signature Sandwich
+                        sigSandwichScreen();
+                        break;
+                    case 3: // Add Drink
+                        Drink drink = createDrink();
+                        currentOrder.getDrinks().add(drink);
+                        System.out.println(GREEN + "\n+ $" + String.format("%.2f", drink.getPrice())
+                                + " added for Drink." + RESET);
+                        break;
+                    case 4: // Add Chips
+                        Chip chip = new Chip(1.50);
+                        currentOrder.getChips().add(chip);
+                        System.out.println(GREEN + "\n+ $" + String.format("%.2f", chip.getPrice())
+                                + " added for Chips." + RESET);
+                        break;
+                    case 5: // Finish Order & Checkout
+                        System.out.println("\n" + "🧾 Order Summary:");
+                        System.out.println(divider);
+                        System.out.println(currentOrder);
+                        System.out.println(divider);
+
+                        int confirmChoice = waitForConfirm();
+                        if (confirmChoice == 1) {
+                            ReceiptFileManager.saveTransaction(currentOrder);
+                            ReceiptFileManager.saveTransactionReceipt(currentOrder);
+                            System.out.println("✅ Thank you for ordering at Fresh Byte Deli!");
+                            actionChosen = 0;
+                            continueOrdering = false;
+                        } else if (confirmChoice == 2) {
+                            System.out.println("🔙 Returning to order editing...");
+                        }
+                        break;
+                    case 6: // Go Back To Main Menu
+                        actionChosen = 1;
+                        continueOrdering = false;
+                        break;
+                    default:
+                        System.out.println(RED + "❌ Invalid option. Please try again." + RESET);
+                        break;
                 }
+            } catch (InputMismatchException e) {
+                scanner.nextLine();
+                System.out.println(RED + "🚫 Invalid entry! Please enter a number." + RESET);
             }
+        }
+        return actionChosen;
+    }
 
-            // Display the final order summary.
-            System.out.println("\n" + "🧾 Order Summary:");
-            System.out.println(divider);
-            System.out.println(order);
-            System.out.println(divider);
+    private Sandwich createSandwich() {
+        System.out.println("\n🥪 Creating Sandwich...");
 
-            // Wait for confirmation (or to go back and edit).
-            int confirmChoice = waitForConfirm();
-            if (confirmChoice == 1) {
-                // Save the transaction and receipt.
-                ReceiptFileManager.saveTransaction(order);
-                ReceiptFileManager.saveTransactionReceipt(order);
-                System.out.println("✅ Thank you for ordering at Fresh Byte Deli!");
-                editingOrder = false;
-            } else if (confirmChoice == 2) {
-                System.out.println("🔙 Returning to order editing...");
-                // Optionally, you could clear the order or let the user modify it.
+        String bread = BreadType.getBreadType(this.scanner);
+        String size = Sandwich.getValidSandwichSize();
+        String meat = Meat.getMeatTypes(this.scanner);
+        String cheese = Toppings.getCheeseTypes(this.scanner);
+        boolean extraMeat = Meat.getExtraMeat(this.scanner);
+        boolean extraCheese = Toppings.getExtraCheese(this.scanner);
+        boolean isToasted = getBooleanInput("\nIs the sandwich toasted?");
+        ArrayList<String> sauces = Sauces.getSauces(this.scanner);
+        ArrayList<String> toppings = Toppings.getToppings(this.scanner);
+        boolean extraVegetables = Toppings.getExtraVegetables(this.scanner);
+        boolean extraSauce = Sauces.getExtraSauce(this.scanner);
+
+        // Use the 11-argument constructor in Sandwich.
+        Sandwich newSandwich = new Sandwich(bread, size, meat, cheese, extraMeat, extraCheese, extraVegetables, isToasted, sauces, toppings, extraSauce);
+        return newSandwich;
+    }
+
+    private void sigSandwichScreen() {
+        System.out.println("---------------------------");
+        System.out.println("Select a signature sandwich");
+        System.out.println(GREEN + "[1]" + RESET + " BLT");
+        System.out.println(GREEN + "[2]" + RESET + " Philly Cheese Steak");
+        System.out.println(RED + "[0]" + RESET + " Go Back");
+        System.out.print("Enter your choice here: ");
+
+        try {
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+
+            if (choice == 1) {
+                BLT blt = new BLT();
+                customize(blt);
+            } else if (choice == 2) {
+                PhillyCheeseSteak philly = new PhillyCheeseSteak();
+                customize(philly);
+            } else if (choice == 0) {
+                // Simply return to go back to the previous menu.
+                return;
+            } else {
+                System.out.println(RED + "Input out of range. Please try again." + RESET);
+                sigSandwichScreen(); // Recursively call to return here.
             }
+        } catch (InputMismatchException e) {
+            System.out.println(RED + "Invalid input! Please enter a valid number." + RESET);
+            scanner.nextLine(); // Clear the invalid input
+            sigSandwichScreen(); // Return to this screen if user input is wrong.
         }
     }
 
-    private static Sandwich createSandwich() {
-        System.out.println("\n🥪 Creating Sandwich...");
 
-        String bread = BreadType.getBreadType(input);
-        String size = Sandwich.getValidSandwichSize();
-        String meat = Meat.getMeatTypes(input);
-        String cheese = Toppings.getCheeseTypes(input);
-        boolean extraMeat = Meat.getExtraMeat(input);
-        boolean extraCheese = Toppings.getExtraCheese(input);
-        boolean isToasted = getBooleanInput("\nIs the sandwich toasted?");
-        ArrayList<String> sauces = Sauces.getSauces(input);
-        ArrayList<String> toppings = Toppings.getToppings(input);
-        return new Sandwich(size, meat, cheese, extraMeat, extraCheese, bread, isToasted, sauces, toppings);
+    // Helper method to add a signature sandwich to the order and print confirmation
+    private void customize(Sandwich sandwich) {
+        currentOrder.getSandwiches().add(sandwich);
+        System.out.println(GREEN + "\n+ $" + String.format("%.2f", sandwich.getPrice())
+                + " added for Signature Sandwich." + RESET);
     }
 
-    private static Drink createDrink() {
+    private Drink createDrink() {
         boolean validDrink = false;
         String drinkSize = "";
-
-
         while (!validDrink) {
-            drinkSize = getOptionalInput("\n Enter drink size (Small, Medium, Large): ").trim();
+            System.out.print("Enter drink size (Small, Medium, Large): ");
+            drinkSize = scanner.nextLine().trim();
             if (Drink.isValidSize(drinkSize)) {
                 validDrink = true;
             } else {
@@ -129,15 +180,10 @@ public class OrderScreen extends HomeScreen {
         return new Drink(drinkSize);
     }
 
-    private static String getOptionalInput(String prompt) {
-        System.out.print(prompt);
-        return input.nextLine().trim();
-    }
-
-    private static boolean getBooleanInput(String prompt) {
+    private boolean getBooleanInput(String prompt) {
         while (true) {
             System.out.print(prompt + " (yes/no): ");
-            String response = input.nextLine().trim().toLowerCase();
+            String response = scanner.nextLine().trim().toLowerCase();
             if (response.isEmpty()) {
                 return false;
             }
@@ -151,11 +197,11 @@ public class OrderScreen extends HomeScreen {
         }
     }
 
-    private static int waitForConfirm() {
+    private int waitForConfirm() {
         while (true) {
             System.out.print("\nPress Enter (or 1) to confirm and continue, or press 2 to go back: ");
             System.out.flush();
-            String response = input.nextLine().trim();
+            String response = scanner.nextLine().trim();
             if (response.isEmpty() || response.equals("1")) {
                 return 1;
             } else if (response.equals("2")) {
@@ -166,14 +212,14 @@ public class OrderScreen extends HomeScreen {
         }
     }
 
-    private static void printCurrentTime() {
+    private void printCurrentTime() {
         LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy | hh:mm a");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd,yyyy | hh:mm a");
         String formattedTime = now.format(formatter);
-        System.out.println("\n" + "Time Now: " + formattedTime);
+        System.out.println("\n" + "🕒  Time Now: " + formattedTime);
+    }
+
+    public Order getCurrentOrder() {
+        return currentOrder;
     }
 }
-
-
-
-

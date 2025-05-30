@@ -1,0 +1,2 @@
+Transaction ID,Date,Order Details,Total
+TX_20250529_161539,20250529_161539,"==== Order Details ==== |  |   Sandwiches: | No Sandwiches Added. |  | Drinks: | ----------------------------------------- |   Size: small, Price: $2.00 |  |   Size: medium, Price: $2.50 |  | Chips: | ----------------------------------------- |   Chips ($1.50) |  |   Chips ($1.50) |  | ----------------------------------------- | [32m       Order Total: $7.50 | [0m",7.50

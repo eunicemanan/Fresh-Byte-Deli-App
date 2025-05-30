@@ -9,6 +9,9 @@ import java.util.Scanner;
  */
 public class Sauces extends MenuItem {
 
+    private static final String RESET = "\033[0m";
+    private static final String GREEN = "\033[32m";
+
     // Static list of allowed sauce flavors with proper capitalization
     private static final ArrayList<String> sauceFlavors = new ArrayList<>(
             Arrays.asList("Mayo", "Mustard", "Ketchup", "Ranch", "Thousand Island", "Vinaigrette")
@@ -16,13 +19,8 @@ public class Sauces extends MenuItem {
 
     private final String selectedSauce;
 
-    /**
-     * Constructor for Sauces.
-     *
-     * @param selectedSauce The user's chosen sauce.
-     */
     public Sauces(String selectedSauce) {
-        super(selectedSauce + " Sauce", 0.50);
+        super(selectedSauce + "Sauce", 0);
 
         if (!containsSauce(selectedSauce)) {
             throw new IllegalArgumentException("Invalid sauce selection: " + selectedSauce);
@@ -41,7 +39,7 @@ public class Sauces extends MenuItem {
     }
 
     public static void printAvailableSauces() {
-        System.out.println("\nAvailable Sauces: " + String.join(", ", sauceFlavors));
+        System.out.println("Available Sauces: " + GREEN + String.join(", ", sauceFlavors) + RESET);
     }
 
     public static ArrayList<String> getSauces(Scanner input) {
@@ -86,6 +84,29 @@ public class Sauces extends MenuItem {
         }
         return selectedSauces;
     }
+    public static boolean getExtraSauce(Scanner input) {
+        while (true) {
+            System.out.println("");
+            printAvailableSauces();
+            System.out.print("Do you want extra sauce? (yes/no): ");
+            String response = input.nextLine().trim();
+
+            // If the user provides no input, we'll default to no extra sauce.
+            if (response.isEmpty()) {
+                return false;
+            }
+
+            if (response.equalsIgnoreCase("yes")) {
+                return true;
+            } else if (response.equalsIgnoreCase("no")) {
+                return false;
+            } else {
+                System.out.println("❌ Invalid input: \"" + response + "\". Please enter 'yes' or 'no'.");
+                System.out.println("Redirecting to sauce options...\n");
+            }
+        }
+    }
+
 
     @Override
     public String toString() {

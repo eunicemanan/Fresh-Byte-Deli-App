@@ -51,29 +51,29 @@ public class Order {
         return total;
     }
 
-    /** Returns a formatted receipt string with sections for sandwiches, drinks, and chips. */
+    /**
+     * Returns a formatted receipt string with sections for sandwiches, drinks, and chips.
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-       // 10 spaces indent
         String divider = "-----------------------------------------";
 
         // Order Header
         sb.append("==== Order Details ====\n\n");
 
         // Sandwiches Section
-        sb.append("  Sandwiches:\n");
-
+        sb.append("Sandwiches:\n");
         if (sandwiches.isEmpty()) {
             sb.append("No Sandwiches Added.\n\n");
         } else {
             int sandwichCount = 0;
             for (Sandwich s : sandwiches) {
                 sandwichCount++;
-                sb.append("Custom Sandwich #").append(sandwichCount);
+                sb.append("\nCustom Sandwich #").append(sandwichCount).append("\n");
                 String[] lines = cleanAndSplit(s.toString());
                 for (String line : lines) {
-                    sb.append("  ").append(line).append("\n");
+                    sb.append(line).append("\n");
                 }
                 sb.append("\n");
             }
@@ -88,11 +88,13 @@ public class Order {
             for (Drink d : drinks) {
                 String[] lines = cleanAndSplit(d.toString());
                 for (String line : lines) {
-                    sb.append("  ").append(line).append("\n");
+                    sb.append("  ").append(line).append("\n");  // Added two-space indent for each line
                 }
                 sb.append("\n");
             }
         }
+
+
 
         // Chips Section
         sb.append("Chips:\n");
@@ -103,26 +105,26 @@ public class Order {
             for (Chip c : chips) {
                 String[] lines = cleanAndSplit(c.toString());
                 for (String line : lines) {
-                    sb.append("  ").append(line).append("\n");
+                    sb.append(line).append("\n");
                 }
-                sb.append("\n");
             }
         }
 
         // Order Total
-        sb.append(divider + "\n")
-                .append(GREEN + "       Order Total: $")
+        sb.append(divider).append("\n")
+                .append(GREEN).append("Order Total: $")
                 .append(String.format("%.2f", getTotal()))
-                .append("\n" + RESET);
+                .append("\n").append(RESET);
 
         return sb.toString();
     }
 
-    /** Removes any leading whitespace on each line
-     and then splits the text on newlines. */
+    /**
+     * Removes any leading whitespace on each line and splits the text on newlines.
+     */
     private String[] cleanAndSplit(String text) {
-        // Remove leading whitespace from each line (multiline mode)
         String cleaned = text.replaceAll("(?m)^\\s+", "");
         return cleaned.split("\n");
     }
 }
+

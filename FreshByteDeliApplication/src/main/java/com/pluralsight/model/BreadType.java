@@ -20,10 +20,8 @@ public class BreadType {
                 return new BreadType("Wheat");
             case "rye":
                 return new BreadType("Rye");
-            case "sourdough":
-                return new BreadType("Sourdough");
-            case "multigrain":
-                return new BreadType("Multigrain");
+            case "wrap":
+                return new BreadType("Wrap");
             default:
                 return null;
         }
@@ -31,7 +29,7 @@ public class BreadType {
 
     public static String getBreadType (Scanner input) {
         while (true) {
-            System.out.print("\n Enter bread type (White, Wheat, Rye, Sourdough, Multigrain): ");
+            System.out.print("\nEnter bread type (White, Wheat, Rye, or a Wrap): ");
             String breadInput = input.nextLine().trim();
             BreadType breadType = BreadType.fromString(breadInput);
             if (breadType != null) {

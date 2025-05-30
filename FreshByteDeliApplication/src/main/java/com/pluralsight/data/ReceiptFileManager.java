@@ -66,11 +66,6 @@ public class ReceiptFileManager {
         }
     }
 
-    /**
-     * Returns the current date and time formatted as "yyyyMMdd_HHmmss".
-     *
-     * @return The formatted current timestamp.
-     */
     private static String getCurrentTimeStamp() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
         return LocalDateTime.now().format(formatter);
